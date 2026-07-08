@@ -1,0 +1,57 @@
+// adc.c  PC1接光敏模块，对应ADC1的模拟输入通道11，而ADC1对应DMA1的请求通道1
+
+#include "adc.h"
+
+volatile uint16_t ADC_ConvertedValue=0;
+
+void ADC1_Init(void) {
+    GPIO_InitTypeDef GPIO_InitStructure;
+    ADC_InitTypeDef ADC_InitStructure;
+    DMA_InitTypeDef DMA_InitStructure;
+		
+		//开时钟
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC | RCC_APB2Periph_ADC1, ENABLE);
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
+
+    // 初始化端口GPIOC/PC1模拟输入
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;  //模拟输入
+    GPIO_Init(GPIOC, &GPIO_InitStructure);
+
+    // DMA配置（通道1）
+    DMA_DeInit(DMA1_Channel1);
+    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)&ADC1->DR;  //adc数据寄存器的地址
+    DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)&ADC_ConvertedValue;  //内存的地址
+    DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;
+    DMA_InitStructure.DMA_BufferSize = 1;
+    DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+    DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Disable;
+    DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;  //16位数据宽度
+    DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;
+    DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;   // 循环模式
+    DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+    DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
+    DMA_Init(DMA1_Channel1, &DMA_InitStructure);
+    DMA_Cmd(DMA1_Channel1, ENABLE);
+
+    // ADC配置
+    ADC_InitStructure.ADC_Mode = ADC_Mode_Independent;
+    ADC_InitStructure.ADC_ScanConvMode = DISABLE; // 单通道
+    ADC_InitStructure.ADC_ContinuousConvMode = ENABLE; // 连续转换
+    ADC_InitStructure.ADC_ExternalTrigConv = ADC_ExternalTrigConv_None;
+    ADC_InitStructure.ADC_DataAlign = ADC_DataAlign_Right;
+    ADC_InitStructure.ADC_NbrOfChannel = 1;  //通道的数量
+    ADC_Init(ADC1, &ADC_InitStructure);  //初始化adc1
+
+    ADC_RegularChannelConfig(ADC1, ADC_Channel_11, 1, ADC_SampleTime_239Cycles5);
+    ADC_DMACmd(ADC1, ENABLE);  //adc发出dma请求
+    ADC_Cmd(ADC1, ENABLE);  //使能adc1
+
+		//adc的校准
+    ADC_ResetCalibration(ADC1);  //复位校准
+    while(ADC_GetResetCalibrationStatus(ADC1));  //等待复位校准完成
+    ADC_StartCalibration(ADC1);  //开始校准
+    while(ADC_GetCalibrationStatus(ADC1));
+
+    ADC_SoftwareStartConvCmd(ADC1, ENABLE); // 启动转换
+}
