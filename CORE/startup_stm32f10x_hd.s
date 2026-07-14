@@ -58,6 +58,9 @@ __heap_limit
                 EXPORT  __Vectors
                 EXPORT  __Vectors_End
                 EXPORT  __Vectors_Size
+                IMPORT  vPortSVCHandler
+                IMPORT  xPortPendSVHandler
+                IMPORT  xPortSysTickHandler
 
 __Vectors       DCD     __initial_sp               ; Top of Stack
                 DCD     Reset_Handler              ; Reset Handler
@@ -70,11 +73,11 @@ __Vectors       DCD     __initial_sp               ; Top of Stack
                 DCD     0                          ; Reserved
                 DCD     0                          ; Reserved
                 DCD     0                          ; Reserved
-                DCD     SVC_Handler                ; SVCall Handler
+                DCD     vPortSVCHandler            ; SVCall Handler (FreeRTOS)
                 DCD     DebugMon_Handler           ; Debug Monitor Handler
                 DCD     0                          ; Reserved
-                DCD     PendSV_Handler             ; PendSV Handler
-                DCD     SysTick_Handler            ; SysTick Handler
+                DCD     xPortPendSVHandler          ; PendSV Handler (FreeRTOS)
+                DCD     xPortSysTickHandler         ; SysTick Handler (FreeRTOS)
 
                 ; External Interrupts
                 DCD     WWDG_IRQHandler            ; Window Watchdog
@@ -180,21 +183,9 @@ UsageFault_Handler\
                 EXPORT  UsageFault_Handler         [WEAK]
                 B       .
                 ENDP
-SVC_Handler     PROC
-                EXPORT  SVC_Handler                [WEAK]
-                B       .
-                ENDP
 DebugMon_Handler\
                 PROC
                 EXPORT  DebugMon_Handler           [WEAK]
-                B       .
-                ENDP
-PendSV_Handler  PROC
-                EXPORT  PendSV_Handler             [WEAK]
-                B       .
-                ENDP
-SysTick_Handler PROC
-                EXPORT  SysTick_Handler            [WEAK]
                 B       .
                 ENDP
 

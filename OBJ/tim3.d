@@ -1,5 +1,5 @@
-..\obj\tim3.o: tim3\tim3.c
-..\obj\tim3.o: tim3\tim3.h
+..\obj\tim3.o: ..\drivers\src\tim3.c
+..\obj\tim3.o: ..\drivers\inc\tim3.h
 ..\obj\tim3.o: ..\USER\stm32f10x.h
 ..\obj\tim3.o: ..\CORE\core_cm3.h
 ..\obj\tim3.o: D:\program\KeIl\ARM\ARMCC\Bin\..\include\stdint.h

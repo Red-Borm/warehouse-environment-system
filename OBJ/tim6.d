@@ -1,6 +1,5 @@
-..\obj\tim6.o: time6\tim6.c
-..\obj\tim6.o: D:\program\KeIl\ARM\ARMCC\Bin\..\include\stdio.h
-..\obj\tim6.o: time6\tim6.h
+..\obj\tim6.o: ..\drivers\src\tim6.c
+..\obj\tim6.o: ..\drivers\inc\tim6.h
 ..\obj\tim6.o: ..\USER\stm32f10x.h
 ..\obj\tim6.o: ..\CORE\core_cm3.h
 ..\obj\tim6.o: D:\program\KeIl\ARM\ARMCC\Bin\..\include\stdint.h

@@ -1,5 +1,5 @@
-..\obj\adc.o: adc\adc.c
-..\obj\adc.o: adc\adc.h
+..\obj\adc.o: ..\drivers\src\adc.c
+..\obj\adc.o: ..\drivers\inc\adc.h
 ..\obj\adc.o: ..\USER\stm32f10x.h
 ..\obj\adc.o: ..\CORE\core_cm3.h
 ..\obj\adc.o: D:\program\KeIl\ARM\ARMCC\Bin\..\include\stdint.h

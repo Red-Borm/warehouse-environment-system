@@ -1,5 +1,5 @@
-..\obj\dht11_driver.o: dht11\dht11_driver.c
-..\obj\dht11_driver.o: dht11\dht11_driver.h
+..\obj\dht11_driver.o: ..\drivers\src\dht11_driver.c
+..\obj\dht11_driver.o: ..\drivers\inc\dht11_driver.h
 ..\obj\dht11_driver.o: ..\USER\stm32f10x.h
 ..\obj\dht11_driver.o: ..\CORE\core_cm3.h
 ..\obj\dht11_driver.o: D:\program\KeIl\ARM\ARMCC\Bin\..\include\stdint.h
@@ -29,5 +29,14 @@
 ..\obj\dht11_driver.o: ..\STM32F10x_FWLib\inc\stm32f10x_usart.h
 ..\obj\dht11_driver.o: ..\STM32F10x_FWLib\inc\stm32f10x_wwdg.h
 ..\obj\dht11_driver.o: ..\STM32F10x_FWLib\inc\misc.h
-..\obj\dht11_driver.o: ..\SYSTEM\delay\delay.h
-..\obj\dht11_driver.o: ..\SYSTEM\sys\sys.h
+..\obj\dht11_driver.o: ..\drivers\inc\delay_us.h
+..\obj\dht11_driver.o: ..\FreeRTOS\inc\FreeRTOS.h
+..\obj\dht11_driver.o: D:\program\KeIl\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\dht11_driver.o: ..\USER\FreeRTOSConfig.h
+..\obj\dht11_driver.o: ..\FreeRTOS\inc\projdefs.h
+..\obj\dht11_driver.o: ..\FreeRTOS\inc\portable.h
+..\obj\dht11_driver.o: ..\FreeRTOS\inc\deprecated_definitions.h
+..\obj\dht11_driver.o: ..\FreeRTOS\inc\portmacro.h
+..\obj\dht11_driver.o: ..\FreeRTOS\inc\mpu_wrappers.h
+..\obj\dht11_driver.o: ..\FreeRTOS\inc\task.h
+..\obj\dht11_driver.o: ..\FreeRTOS\inc\list.h

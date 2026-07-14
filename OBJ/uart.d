@@ -1,5 +1,5 @@
-..\obj\uart.o: uart\uart.c
-..\obj\uart.o: uart\uart.h
+..\obj\uart.o: ..\drivers\src\uart.c
+..\obj\uart.o: ..\drivers\inc\uart.h
 ..\obj\uart.o: ..\USER\stm32f10x.h
 ..\obj\uart.o: ..\CORE\core_cm3.h
 ..\obj\uart.o: D:\program\KeIl\ARM\ARMCC\Bin\..\include\stdint.h
@@ -29,5 +29,15 @@
 ..\obj\uart.o: ..\STM32F10x_FWLib\inc\stm32f10x_usart.h
 ..\obj\uart.o: ..\STM32F10x_FWLib\inc\stm32f10x_wwdg.h
 ..\obj\uart.o: ..\STM32F10x_FWLib\inc\misc.h
+..\obj\uart.o: ..\FreeRTOS\inc\FreeRTOS.h
+..\obj\uart.o: D:\program\KeIl\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\uart.o: ..\USER\FreeRTOSConfig.h
+..\obj\uart.o: ..\FreeRTOS\inc\projdefs.h
+..\obj\uart.o: ..\FreeRTOS\inc\portable.h
+..\obj\uart.o: ..\FreeRTOS\inc\deprecated_definitions.h
+..\obj\uart.o: ..\FreeRTOS\inc\portmacro.h
+..\obj\uart.o: ..\FreeRTOS\inc\mpu_wrappers.h
+..\obj\uart.o: ..\FreeRTOS\inc\queue.h
+..\obj\uart.o: ..\FreeRTOS\inc\task.h
+..\obj\uart.o: ..\FreeRTOS\inc\list.h
 ..\obj\uart.o: D:\program\KeIl\ARM\ARMCC\Bin\..\include\stdio.h
-..\obj\uart.o: D:\program\KeIl\ARM\ARMCC\Bin\..\include\string.h

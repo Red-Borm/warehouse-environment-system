@@ -1,5 +1,5 @@
-..\obj\keyint.o: keyint\keyint.c
-..\obj\keyint.o: keyint\keyint.h
+..\obj\keyint.o: ..\drivers\src\keyint.c
+..\obj\keyint.o: ..\drivers\inc\keyint.h
 ..\obj\keyint.o: ..\USER\stm32f10x.h
 ..\obj\keyint.o: ..\CORE\core_cm3.h
 ..\obj\keyint.o: D:\program\KeIl\ARM\ARMCC\Bin\..\include\stdint.h
@@ -29,3 +29,13 @@
 ..\obj\keyint.o: ..\STM32F10x_FWLib\inc\stm32f10x_usart.h
 ..\obj\keyint.o: ..\STM32F10x_FWLib\inc\stm32f10x_wwdg.h
 ..\obj\keyint.o: ..\STM32F10x_FWLib\inc\misc.h
+..\obj\keyint.o: ..\FreeRTOS\inc\FreeRTOS.h
+..\obj\keyint.o: D:\program\KeIl\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\keyint.o: ..\USER\FreeRTOSConfig.h
+..\obj\keyint.o: ..\FreeRTOS\inc\projdefs.h
+..\obj\keyint.o: ..\FreeRTOS\inc\portable.h
+..\obj\keyint.o: ..\FreeRTOS\inc\deprecated_definitions.h
+..\obj\keyint.o: ..\FreeRTOS\inc\portmacro.h
+..\obj\keyint.o: ..\FreeRTOS\inc\mpu_wrappers.h
+..\obj\keyint.o: ..\FreeRTOS\inc\task.h
+..\obj\keyint.o: ..\FreeRTOS\inc\list.h

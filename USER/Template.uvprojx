@@ -373,7 +373,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F10X_HD,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\USER;..\CORE;..\STM32F10x_FWLib\inc;..\SYSTEM\delay;..\SYSTEM\sys;.\led;.\key;.\beep;.\keyint;.\uart;.\time6;.\tim3;.\adc;.\lcd1602;.\oled;.\motor;.\ds18b20;.\dht11;.\sg90</IncludePath>
+              <IncludePath>..\USER;..\FreeRTOS\inc;..\CORE;..\STM32F10x_FWLib\inc;..\SYSTEM\delay;..\SYSTEM\sys;..\drivers\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -577,11 +577,6 @@
           <GroupName>SYSTEM</GroupName>
           <Files>
             <File>
-              <FileName>delay.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\SYSTEM\delay\delay.c</FilePath>
-            </File>
-            <File>
               <FileName>sys.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\SYSTEM\sys\sys.c</FilePath>
@@ -591,245 +586,200 @@
               <FileType>5</FileType>
               <FilePath>..\SYSTEM\sys\sys.h</FilePath>
             </File>
-            <File>
-              <FileName>delay.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\SYSTEM\delay\delay.h</FilePath>
-            </File>
           </Files>
         </Group>
         <Group>
-          <GroupName>README</GroupName>
-          <Files>
-            <File>
-              <FileName>README.TXT</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\README.TXT</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>led</GroupName>
+          <GroupName>DRIVERS</GroupName>
           <Files>
             <File>
               <FileName>led.c</FileName>
               <FileType>1</FileType>
-              <FilePath>.\led\led.c</FilePath>
+              <FilePath>..\drivers\src\led.c</FilePath>
+            </File>
+            <File>
+              <FileName>beep.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drivers\src\beep.c</FilePath>
+            </File>
+            <File>
+              <FileName>key.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drivers\src\key.c</FilePath>
+            </File>
+            <File>
+              <FileName>keyint.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drivers\src\keyint.c</FilePath>
+            </File>
+            <File>
+              <FileName>uart.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drivers\src\uart.c</FilePath>
+            </File>
+            <File>
+              <FileName>tim3.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drivers\src\tim3.c</FilePath>
+            </File>
+            <File>
+              <FileName>adc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drivers\src\adc.c</FilePath>
+            </File>
+            <File>
+              <FileName>lcd1602.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drivers\src\lcd1602.c</FilePath>
+            </File>
+            <File>
+              <FileName>motor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drivers\src\motor.c</FilePath>
+            </File>
+            <File>
+              <FileName>ds18b20.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drivers\src\ds18b20.c</FilePath>
+            </File>
+            <File>
+              <FileName>dht11_driver.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drivers\src\dht11_driver.c</FilePath>
+            </File>
+            <File>
+              <FileName>sg90.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drivers\src\sg90.c</FilePath>
+            </File>
+            <File>
+              <FileName>delay_us.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drivers\src\delay_us.c</FilePath>
+            </File>
+            <File>
+              <FileName>app_tasks.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\drivers\src\app_tasks.c</FilePath>
             </File>
             <File>
               <FileName>led.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\led\led.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>key</GroupName>
-          <Files>
-            <File>
-              <FileName>key.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\key\key.c</FilePath>
-            </File>
-            <File>
-              <FileName>key.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\key\key.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>keyint</GroupName>
-          <Files>
-            <File>
-              <FileName>keyint.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\keyint\keyint.c</FilePath>
-            </File>
-            <File>
-              <FileName>keyint.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\keyint\keyint.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>beep</GroupName>
-          <Files>
-            <File>
-              <FileName>beep.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\beep\beep.c</FilePath>
+              <FilePath>..\drivers\inc\led.h</FilePath>
             </File>
             <File>
               <FileName>beep.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\beep\beep.h</FilePath>
+              <FilePath>..\drivers\inc\beep.h</FilePath>
             </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>uart</GroupName>
-          <Files>
             <File>
-              <FileName>uart.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\uart\uart.c</FilePath>
+              <FileName>key.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\drivers\inc\key.h</FilePath>
+            </File>
+            <File>
+              <FileName>keyint.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\drivers\inc\keyint.h</FilePath>
             </File>
             <File>
               <FileName>uart.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\uart\uart.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>time6</GroupName>
-          <Files>
-            <File>
-              <FileName>tim6.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\time6\tim6.c</FilePath>
-            </File>
-            <File>
-              <FileName>tim6.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\time6\tim6.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>dlc</GroupName>
-          <Files>
-            <File>
-              <FileName>beifen.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\dlc\beifen.c</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>tim3</GroupName>
-          <Files>
-            <File>
-              <FileName>tim3.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\tim3\tim3.c</FilePath>
+              <FilePath>..\drivers\inc\uart.h</FilePath>
             </File>
             <File>
               <FileName>tim3.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\tim3\tim3.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>adc</GroupName>
-          <Files>
-            <File>
-              <FileName>adc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\adc\adc.c</FilePath>
+              <FilePath>..\drivers\inc\tim3.h</FilePath>
             </File>
             <File>
               <FileName>adc.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\adc\adc.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>lcd1602</GroupName>
-          <Files>
-            <File>
-              <FileName>lcd1602.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\lcd1602\lcd1602.c</FilePath>
+              <FilePath>..\drivers\inc\adc.h</FilePath>
             </File>
             <File>
               <FileName>lcd1602.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\lcd1602\lcd1602.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>oled</GroupName>
-          <Files>
-            <File>
-              <FileName>oled_iic.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\oled\oled_iic.c</FilePath>
-            </File>
-            <File>
-              <FileName>oled_iic.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\oled\oled_iic.h</FilePath>
-            </File>
-            <File>
-              <FileName>oledfont.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>.\oled\oledfont.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>motor</GroupName>
-          <Files>
-            <File>
-              <FileName>motor.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\motor\motor.c</FilePath>
+              <FilePath>..\drivers\inc\lcd1602.h</FilePath>
             </File>
             <File>
               <FileName>motor.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\motor\motor.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>ds18b20</GroupName>
-          <Files>
-            <File>
-              <FileName>ds18b20.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\ds18b20\ds18b20.c</FilePath>
+              <FilePath>..\drivers\inc\motor.h</FilePath>
             </File>
             <File>
               <FileName>ds18b20.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\ds18b20\ds18b20.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>dht11</GroupName>
-          <Files>
-            <File>
-              <FileName>dht11_driver.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\dht11\dht11_driver.c</FilePath>
+              <FilePath>..\drivers\inc\ds18b20.h</FilePath>
             </File>
             <File>
               <FileName>dht11_driver.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\dht11\dht11_driver.h</FilePath>
-            </File>
-          </Files>
-        </Group>
-        <Group>
-          <GroupName>sg90</GroupName>
-          <Files>
-            <File>
-              <FileName>sg90.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\sg90\sg90.c</FilePath>
+              <FilePath>..\drivers\inc\dht11_driver.h</FilePath>
             </File>
             <File>
               <FileName>sg90.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\sg90\sg90.h</FilePath>
+              <FilePath>..\drivers\inc\sg90.h</FilePath>
+            </File>
+            <File>
+              <FileName>delay_us.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\drivers\inc\delay_us.h</FilePath>
+            </File>
+            <File>
+              <FileName>app_tasks.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\drivers\inc\app_tasks.h</FilePath>
+            </File>
+          </Files>
+        </Group>
+        <Group>
+          <GroupName>FreeRTOS</GroupName>
+          <Files>
+            <File>
+              <FileName>croutine.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FreeRTOS\src\croutine.c</FilePath>
+            </File>
+            <File>
+              <FileName>event_groups.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FreeRTOS\src\event_groups.c</FilePath>
+            </File>
+            <File>
+              <FileName>heap_4.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FreeRTOS\src\heap_4.c</FilePath>
+            </File>
+            <File>
+              <FileName>list.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FreeRTOS\src\list.c</FilePath>
+            </File>
+            <File>
+              <FileName>port.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FreeRTOS\src\port.c</FilePath>
+            </File>
+            <File>
+              <FileName>queue.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FreeRTOS\src\queue.c</FilePath>
+            </File>
+            <File>
+              <FileName>stream_buffer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FreeRTOS\src\stream_buffer.c</FilePath>
+            </File>
+            <File>
+              <FileName>tasks.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FreeRTOS\src\tasks.c</FilePath>
+            </File>
+            <File>
+              <FileName>timers.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FreeRTOS\src\timers.c</FilePath>
             </File>
           </Files>
         </Group>

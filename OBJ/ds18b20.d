@@ -1,5 +1,5 @@
-..\obj\ds18b20.o: ds18b20\ds18b20.c
-..\obj\ds18b20.o: ds18b20\ds18b20.h
+..\obj\ds18b20.o: ..\drivers\src\ds18b20.c
+..\obj\ds18b20.o: ..\drivers\inc\ds18b20.h
 ..\obj\ds18b20.o: ..\SYSTEM\sys\sys.h
 ..\obj\ds18b20.o: ..\USER\stm32f10x.h
 ..\obj\ds18b20.o: ..\CORE\core_cm3.h
@@ -30,4 +30,4 @@
 ..\obj\ds18b20.o: ..\STM32F10x_FWLib\inc\stm32f10x_usart.h
 ..\obj\ds18b20.o: ..\STM32F10x_FWLib\inc\stm32f10x_wwdg.h
 ..\obj\ds18b20.o: ..\STM32F10x_FWLib\inc\misc.h
-..\obj\ds18b20.o: ..\SYSTEM\delay\delay.h
+..\obj\ds18b20.o: ..\drivers\inc\delay_us.h

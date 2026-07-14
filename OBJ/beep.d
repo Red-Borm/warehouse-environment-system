@@ -1,5 +1,5 @@
-..\obj\beep.o: beep\beep.c
-..\obj\beep.o: beep\beep.h
+..\obj\beep.o: ..\drivers\src\beep.c
+..\obj\beep.o: ..\drivers\inc\beep.h
 ..\obj\beep.o: ..\USER\stm32f10x.h
 ..\obj\beep.o: ..\CORE\core_cm3.h
 ..\obj\beep.o: D:\program\KeIl\ARM\ARMCC\Bin\..\include\stdint.h

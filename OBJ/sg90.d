@@ -1,5 +1,5 @@
-..\obj\sg90.o: sg90\sg90.c
-..\obj\sg90.o: sg90\sg90.h
+..\obj\sg90.o: ..\drivers\src\sg90.c
+..\obj\sg90.o: ..\drivers\inc\sg90.h
 ..\obj\sg90.o: ..\USER\stm32f10x.h
 ..\obj\sg90.o: ..\CORE\core_cm3.h
 ..\obj\sg90.o: D:\program\KeIl\ARM\ARMCC\Bin\..\include\stdint.h

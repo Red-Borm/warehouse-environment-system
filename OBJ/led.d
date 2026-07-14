@@ -1,5 +1,5 @@
-..\obj\led.o: led\led.c
-..\obj\led.o: led\led.h
+..\obj\led.o: ..\drivers\src\led.c
+..\obj\led.o: ..\drivers\inc\led.h
 ..\obj\led.o: ..\USER\stm32f10x.h
 ..\obj\led.o: ..\CORE\core_cm3.h
 ..\obj\led.o: D:\program\KeIl\ARM\ARMCC\Bin\..\include\stdint.h

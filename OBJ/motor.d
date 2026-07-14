@@ -1,5 +1,5 @@
-..\obj\motor.o: motor\motor.c
-..\obj\motor.o: motor\motor.h
+..\obj\motor.o: ..\drivers\src\motor.c
+..\obj\motor.o: ..\drivers\inc\motor.h
 ..\obj\motor.o: D:\program\KeIl\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\motor.o: ..\SYSTEM\sys\sys.h
 ..\obj\motor.o: ..\USER\stm32f10x.h
@@ -30,4 +30,13 @@
 ..\obj\motor.o: ..\STM32F10x_FWLib\inc\stm32f10x_usart.h
 ..\obj\motor.o: ..\STM32F10x_FWLib\inc\stm32f10x_wwdg.h
 ..\obj\motor.o: ..\STM32F10x_FWLib\inc\misc.h
-..\obj\motor.o: ..\SYSTEM\delay\delay.h
+..\obj\motor.o: ..\FreeRTOS\inc\FreeRTOS.h
+..\obj\motor.o: D:\program\KeIl\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\motor.o: ..\USER\FreeRTOSConfig.h
+..\obj\motor.o: ..\FreeRTOS\inc\projdefs.h
+..\obj\motor.o: ..\FreeRTOS\inc\portable.h
+..\obj\motor.o: ..\FreeRTOS\inc\deprecated_definitions.h
+..\obj\motor.o: ..\FreeRTOS\inc\portmacro.h
+..\obj\motor.o: ..\FreeRTOS\inc\mpu_wrappers.h
+..\obj\motor.o: ..\FreeRTOS\inc\task.h
+..\obj\motor.o: ..\FreeRTOS\inc\list.h

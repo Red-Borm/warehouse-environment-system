@@ -1,351 +1,82 @@
 #include "stm32f10x.h"
-#include "key.h"
-#include "keyint.h"
+#include "app_tasks.h"
+#include "delay_us.h"
 #include "led.h"
-#include "delay.h"
 #include "beep.h"
 #include "uart.h"
-#include "tim6.h"
 #include "tim3.h"
 #include "adc.h"
 #include "lcd1602.h"
-#include "string.h"
-#include "oled_iic.h"
 #include "ds18b20.h"
-#include "motor.h"
 #include "dht11_driver.h"
-#include "stdio.h"
-#include "sg90.h" 
-
+#include "key.h"
+#include "keyint.h"
+#include "motor.h"
+#include "sg90.h"
 
 /* --------------------------------------------------------- */
-/* ƒ£ Ω∂®“Â */
+/* IPC ÂØπË±°ÂÆö‰πâ                                                */
 /* --------------------------------------------------------- */
-typedef enum
+QueueHandle_t xUARTCommandQueue = NULL;
+TaskHandle_t  xControlTaskHandle = NULL;
+
+/* --------------------------------------------------------- */
+/* FreeRTOS Èí©Â≠êÂáΩÊï∞                                          */
+/* --------------------------------------------------------- */
+void vApplicationMallocFailedHook(void)
 {
-    MODE_REMOTE = 0, // ‘∂≥Ãƒ£ Ω
-    MODE_AUTO = 1,   // ◊‘∂Øƒ£ Ω
-    MODE_MANUL = 2   //  ÷∂Øƒ£ Ω
-}   ModeType;
+    taskDISABLE_INTERRUPTS();
+    while (1);
+}
 
-/* »´æ÷ƒ£ Ω±‰¡ø∫Õ÷¥––ª˙ππ◊¥Ã¨±‰¡ø */
-ModeType CurrentMode = MODE_AUTO; // ≥ı ºªØŒ™◊‘∂Øƒ£ Ω
+void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
+{
+    (void)xTask;
+    (void)pcTaskName;
+    taskDISABLE_INTERRUPTS();
+    while (1);
+}
 
-uint8_t Fan_Status = 0;           // DC ÷±¡˜µÁª˙/∑Á…»◊¥Ã¨ (0:πÿ, 1:ø™) - Ωˆ”√”⁄œ‘ æ◊¥Ã¨
-
-uint8_t Vent_Position = 0;        // ≈≈∑Áø⁄√≈∑ßŒª÷√◊¥Ã¨ (0:πÿ±’, 1:ø™∆Ù)
-
-uint8_t curtain_Status = 0; 
-
-/* Õ‚≤ø±‰¡ø“˝”√…˘√˜ */
-extern uint8_t strBuff[32];                 // ¥Æø⁄Ω” ’ª∫≥Â«¯
-extern uint8_t rxFlag;                      // ¥Æø⁄Ω” ’±Í÷æŒª
-extern volatile uint16_t ADC_ConvertedValue[2]; // DMA∞·‘ÀµƒADC÷µ [0]:π‚’’ [1]:—ÃŒÌ
-extern uint8_t timeFlag500ms;               // 0.5s∂® ±±Í÷æŒª
-extern uint8_t timeFlag5s;                  // 5s∂® ±±Í÷æŒª
-extern uint8_t  keyFlag;                    // DK1∞¥º¸÷–∂œ±Í÷æŒª
-
-uint8_t keyValue;
-// ¥´∏–∆˜ ˝æ›
-float lightpercent = 0.0;
-float MQ2_ConvertedValue = 0;
-short temp;
-float temperature = 0.0; 
-DHT11_Data_TypeDef humi_temp;
-ErrorStatus dhtStatus = ERROR; 
-
-// œ‘ æª∫≥Â«¯
-char Lcd_Line1[17] = "Mode: AUTO      "; // LCD––1
-char Lcd_Line2[17] = "System Normal   "; // LCD––2
-
-
-// °æ“—…æ≥˝°øSet_DC_Motor ∫Ø ˝£¨÷±Ω” π”√ DCColor ∫Íøÿ÷∆
-
-
+/* --------------------------------------------------------- */
+/* main                                                       */
+/* --------------------------------------------------------- */
 int main(void)
 {
-    // ---------------------------------------------------------
-    // 1. ”≤º˛Õ‚…Ë≥ı ºªØ
-    // ---------------------------------------------------------
-    delay_init();           
-    LedInit();              
-    BeepInit();             
-    UART1_Config();         
-    TIM6_Config();          
-    TIM3_PWM_Init();        
-    ADC1_Init();            
-    Lcd1602Init();          
-    OLED_Init();            
-    OLED_Clear();           
-    DS18B20_Init();         
-    DHT11_GPIO_Config();    
-    KeyInit();              
-    KeyIntConfig();         
-    MotorInit();            // °æ–¬‘ˆ°ø»∑±£ DCColor ∂‘”¶µƒ PA4 ±ª≈‰÷√Œ™ ‰≥ˆ
-    
-    // °æ∂Êª˙≥ı ºªØ°ø
-    SG90_Init();            // –¬‘ˆ£∫∂Êª˙≥ı ºªØ
-    Servo_SetAngle(0);      // ≥ı º◊¥Ã¨£∫√≈∑ßπÿ±’
-    
-    // …Ë÷√÷–∂œ”≈œ»º∂∑÷◊È
-    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_0);
-    
-    
-    while(1)
-    {
-        
-        // -----------------------------------------------------
-        // 2. ¥´∏–∆˜ ˝æ›≤…ºØ”Îº∆À„
-        // -----------------------------------------------------
-        // ... (¥´∏–∆˜≤…ºØ¥˙¬Î≤ª±‰) ...
-        
-        // A. –ƒÃ¯µ∆
-        if(timeFlag500ms == 1)  
-        {
-            GPIOA->ODR ^= GPIO_Pin_7; 
-            timeFlag500ms = 0;        
-        }
-        
-        // B. π‚’’º∆À„
-        lightpercent = (float)ADC_ConvertedValue[0] / 4095.0 * 100.0;
-        
-        // C. —ÃŒÌº∆À„ (MQ2)
-        MQ2_ConvertedValue = 100.0 * (float)ADC_ConvertedValue[1] / 4095.0; 
-        
-        // D. Œ¬∂»≤…ºØ (DS18B20)
-        if(timeFlag5s) 
-        {
-            temp = DS18B20_Get_Temp();
-            if(temp < 0) temperature = (float)(-temp * 0.1);
-            else temperature = (float)(temp * 0.1);
-            timeFlag5s = 0; 
-        }
-				
-		// E. ∂¡»°DHT11Œ¬ ™∂»
-        dhtStatus = Read_DHT11(&humi_temp);
-		
-		// -----------------------------------------------------
-        // 3. ƒ£ Ω«–ªª¬ﬂº≠ (DK1 ÷–∂œ¥¶¿Ì)
-        // -----------------------------------------------------
-        if (keyFlag == 1) 
-        {
-            delay_ms(20); 
-            if (GPIO_ReadInputDataBit(GPIOC,GPIO_Pin_4)==0) 
-            {
-                // «–ªªƒ£ Ω£∫REMOTE (0) -> AUTO (1) -> MANUL (2) -> REMOTE (0)
-                CurrentMode = (ModeType)((CurrentMode + 1) % 3); 
-                
-                // ƒ£ Ω«–ªª∫Û£¨πÿ±’À˘”–÷¥––ª˙ππ (»∑±£∞≤»´∫Õ◊¥Ã¨«Â¡„)
-                DCColor = 0;    // πÿ±’ DC ∑Á…»
-                Fan_Status = 0; // ∏¸–¬◊¥Ã¨±‰¡ø
-                
-                BEEP_OFF;       // πÿ±’∑‰√˘∆˜
-                
-                curtain_Status = 0; 
-            }
-            keyFlag = 0; // «Â≥˝±Í÷æŒª
-        }
-        
-        // -----------------------------------------------------
-        // 4. π§◊˜ƒ£ Ωøÿ÷∆¬ﬂº≠
-        // -----------------------------------------------------
-        switch((int)CurrentMode)
-		{
-			case MODE_REMOTE: // ‘∂≥Ãøÿ÷∆ƒ£ Ω
-                
-                sprintf((char*)Lcd_Line1, "Mode: REMOTE    ");
-                sprintf((char*)Lcd_Line2, "Wait for Cmd    ");
-                
-                if(rxFlag == 1)
-                {
-                    if (strstr((char*)strBuff, "FAN_ON")) 
-                    {
-                        DCColor = 1; 
-                        Fan_Status = 1;
-                    }
-                    else if (strstr((char*)strBuff, "FAN_OFF")) 
-                    {
-                        DCColor = 0; 
-                        Fan_Status = 0;
-                    }
-                    // ‘∂≥Ãøÿ÷∆√≈∑ß
-                    else if (strstr((char*)strBuff, "VENT_OPEN")) Servo_SetAngle(0);
-                    else if (strstr((char*)strBuff, "VENT_CLOSE")) Servo_SetAngle(180); // ◊¢“‚£∫SG90“ª∞„ «0-180∂»£¨’‚¿Ôø…ƒ‹ «± ŒÛ±£¡Ù‘≠—˘
-                    
-                    rxFlag = 0; 
-                    memset(strBuff, 0, 32);
-                }
-                
-                break;
-       
-            case MODE_AUTO: // ◊‘∂Øøÿ÷∆ƒ£ Ω (–¬¡™∂Ø¬ﬂº≠)
-                
-                // --- 1. ±®æØ”Îπ‚√Ù“∫Œª±®æØ ---
-                if (temperature > 40.0 || MQ2_ConvertedValue > 75.0 || lightpercent > 60.0)
-                {
-                    // ºÚªØ±®æØ£∫T>40 OR CH4>75 OR Liquid Low(Light>60)
-                    BEEP_ON; 
-                    if (temperature > 40.0)
-                        sprintf((char*)Lcd_Line2, "Alarm: TEMP HIGH");
-                    else if (MQ2_ConvertedValue > 75.0)
-                        sprintf((char*)Lcd_Line2, "Alarm: GAS HIGH ");
-                    else if (lightpercent > 60.0)
-                        sprintf((char*)Lcd_Line2, "Alarm: LIQ LOW  ");
-                }
-                else
-                {
-                    BEEP_OFF; // Ω‚≥˝±®æØ
-                    sprintf((char*)Lcd_Line2, "System Normal   ");
-                }
+    /* ---- 1. ‰∏≠Êñ≠‰ºòÂÖàÁ∫ßÂàÜÁªÑÔºàÂøÖÈ°ªÂú®‰ªª‰ΩïÂ§ñËÆæ‰∏≠Êñ≠‰ΩøËÉΩÂâçËÆæÁΩÆÔºâ ---- */
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_4);
 
-                // --- 2. DC∑Á…»øÿ÷∆ ---
-                // ø™∆ÙÃıº˛£∫Œ¬∂» > 25C OR º◊ÕÈ > 60%
-                if (temperature >= 30.0 || MQ2_ConvertedValue >= 60.0)
-                {
-                    DCColor = 1;
-                    Fan_Status = 1;
-                }
-                // πÿ±’Ãıº˛ (–ËÕ¨ ±¬˙◊„)£∫Œ¬∂» < 28C AND º◊ÕÈ < 55%
-                else if (temperature < 28.0 && MQ2_ConvertedValue < 55.0) 
-                {
-                    DCColor = 0;
-                    Fan_Status = 0;
-                }
+    /* ---- 2. Á°¨‰ª∂ÂàùÂßãÂåñ ---- */
+    DelayUs_Init();             /* TIM4ÔºöÂæÆÁßíÂª∂Êó∂ÔºàDHT11/DS18B20 Êó∂Â∫èÔºâ */
+    LedInit();
+    BeepInit();
+    UART1_Config();             /* USART1 ‰∏≠Êñ≠‰ºòÂÖàÁ∫ßÂ∑≤Âú®ÂÜÖÈÉ®ËÆæ‰∏∫ 6 */
+    TIM3_PWM_Init();
+    ADC1_Init();                /* ADC+DMA ËøûÁª≠Êâ´Êèè */
+    Lcd1602Init();
+    DS18B20_Init();
+    DHT11_GPIO_Config();
+    KeyInit();
+    KeyIntConfig();             /* EXTI4 ‰∏≠Êñ≠‰ºòÂÖàÁ∫ßÂ∑≤Âú®ÂÜÖÈÉ®ËÆæ‰∏∫ 6 */
+    MotorInit();
+    SG90_Init();
+    Servo_SetAngle(0);
 
-                // --- 3. √≈∑ß/∂Êª˙øÿ÷∆ (Œ¬∂»/º◊ÕÈ) ---
-                if (temperature >= 25.0|| MQ2_ConvertedValue >= 50.0) 
-                {
-                    Servo_SetAngle(0); // Œ¬∂»∏ﬂ/∆¯∏ﬂ£¨ø™∆Ù√≈∑ß…¢»»/≈≈∆¯
-                    Vent_Position = 1;
-                }
-                else if (temperature < 25.0|| MQ2_ConvertedValue < 50.0) 
-                {
-                    Servo_SetAngle(180); // Œ¬∂»µÕ/∆¯µÕ£¨πÿ±’√≈∑ß
-                    Vent_Position = 0;
-                }
-								
-				//--- 3. √≈∑ß/∂Êª˙/∑Á…»øÿ÷∆ ( ™∂») ---
-				if (humi_temp.humi_int >= 50.0)
-				{
-					Servo_SetAngle(0); 
-                    Vent_Position = 1;
-				}
-				else if (humi_temp.humi_int >= 90.0)
-				{
-					DCColor = 1;
-                    Fan_Status = 1;
-				}
-				else
-				{
-					Servo_SetAngle(180);
-                    Vent_Position = 0;
-          DCColor = 0;
-                    Fan_Status = 0;
-				}
-				
-                
-                sprintf((char*)Lcd_Line1, "Mode: AUTO      ");
-                // »Áπ˚√ª”–±®æØ£¨LCD2œ‘ æ÷¥––ª˙ππ◊¥Ã¨
-                if(strstr((char*)Lcd_Line2, "Alarm") == NULL)
-                    sprintf((char*)Lcd_Line2, "FAN:%s VENT:%s", Fan_Status ? "ON " : "OFF", Vent_Position ? "OPEN" : "CLSD");
+    /* ---- 3. ÂàõÂª∫ IPC ÂØπË±° ---- */
+    xUARTCommandQueue = xQueueCreate(4, UART_CMD_MAX_LEN);
+    UART_SetCommandQueue(xUARTCommandQueue);
 
+    /* ---- 4. ÂàõÂª∫‰ªªÂä° ---- */
+    xTaskCreate(vSensorTask,   "Sensor",   384, NULL, 2, NULL);
+    xTaskCreate(vControlTask,  "Control",  512, NULL, 3, &xControlTaskHandle);
+    xTaskCreate(vDisplayTask,  "Display",  256, NULL, 1, NULL);
+    xTaskCreate(vKeyTask,      "KeyScan",  192, NULL, 1, NULL);
+    xTaskCreate(vLogTask,      "Log",      256, NULL, 0, NULL);
 
-                break;
-			
-            case MODE_MANUL: //  ÷∂Øøÿ÷∆ƒ£ Ω
-                
-                sprintf((char*)Lcd_Line1, "Mode: MANUL     ");
-                
-                // ∂¡»°∞¥º¸ (KEY2, KEY3, KEY4)
-                keyValue = KeyScan();
-                
-                if(keyValue == KEY2) // DK2 (PC5) - øÿ÷∆∑Á…»ø™πÿ
-                {
-                    if(Fan_Status == 0)
-                    {
-                        DCColor = 1;
-                        Fan_Status = 1;
-                    }
-                    else
-                    {
-                        DCColor = 0;
-                        Fan_Status = 0;
-                    }
-                    delay_ms(50); 
-                }
-                else if(keyValue == KEY3) // DK3 (PC6) - √≈∑ßø™∆Ù
-                {
-                    Servo_SetAngle(0);
-                    Vent_Position = 1;
-                }
-                else if(keyValue == KEY4) // DK4 (PC7) - √≈∑ßπÿ±’
-                {
-                    Servo_SetAngle(180);
-                    Vent_Position = 0;
-                }
-                
-                // LCDµ⁄∂˛––œ‘ æ÷¥––ª˙ππ◊¥Ã¨
-                sprintf((char*)Lcd_Line2, "FAN:%s VENT:%s", Fan_Status ? "ON " : "OFF", Vent_Position ? "OPEN" : "CLSD");
-                
-                break;
-        }
-				
-        // -----------------------------------------------------
-        // 5. œ‘ æ∏¸–¬ 
-        // -----------------------------------------------------
-        
-        // À¢–¬ LCD
-        Lcd1602ShowString(1, 0, (uint8_t*)Lcd_Line1, 16); // µ⁄“ª––œ‘ æƒ£ Ω
-        Lcd1602ShowString(2, 0, (uint8_t*)Lcd_Line2, 16); // µ⁄∂˛––œ‘ æ◊¥Ã¨
+    /* Â∞Ü ControlTask Âè•ÊüÑÊ≥®ÂÜåÂà∞ DK1 ‰∏≠Êñ≠È©±Âä® */
+    KeyInt_SetNotifyTask(xControlTaskHandle);
 
-        // À¢–¬ OLED
-        sprintf((char*)strBuff, "Light:%.1f%%   ", lightpercent);
-        OLED_ShowCH(0, 0, (uint8_t*)strBuff); 
-        
-        sprintf((char*)strBuff, "CH4  :%.1f%%   ", MQ2_ConvertedValue);
-        OLED_ShowCH(0, 2, (uint8_t*)strBuff);
-        
-        sprintf((char*)strBuff,"Temp :%d.%dC  ",humi_temp.temp_int,humi_temp.temp_deci);
-        OLED_ShowCH(0, 4, (uint8_t*)strBuff);
-        
-        if(dhtStatus == SUCCESS)
-        {
-			sprintf((char*)strBuff,"Humi :%d%%  ",humi_temp.humi_int);
-        }
-        else
-        {
-            sprintf((char*)strBuff, "Humi :Error    "); 
-        }
-        OLED_ShowCH(0, 6, (uint8_t*)strBuff);
+    /* ---- 5. ÂêØÂä®Ë∞ÉÂ∫¶Âô® ---- */
+    vTaskStartScheduler();
 
-
-        // -----------------------------------------------------
-        // 6. ¥Æø⁄Õ≥“ª ‰≥ˆ 
-        // -----------------------------------------------------
-        
-        printf("\r\n--- Sensor Status ---\r\n");
-        printf("Mode        : %s\r\n", (CurrentMode == MODE_REMOTE) ? "REMOTE" : ((CurrentMode == MODE_AUTO) ? "AUTO" : "MANUAL"));
-        printf("Vent Status : %s\\r\\n", Vent_Position ? "OPEN" : "CLOSE");
-        printf("Fan Status  : %s\r\n", Fan_Status ? "ON" : "OFF"); 
-        printf("Light Level : %.1f %%\r\n", lightpercent);
-        printf("Smoke Level : %.1f %%\r\n", MQ2_ConvertedValue);
-        printf("Temperature : %.1f C\r\n", temperature);
-        if(dhtStatus == SUCCESS)
-        {
-            printf("Humidity    : %d %%\r\n", humi_temp.humi_int);
-        }
-        else
-        {
-            printf("Humidity    : Read Error\r\n");
-        }
-        printf("Curtain     : %s\r\n", curtain_Status ? "OPEN" : "CLOSE");
-
-
-        // -----------------------------------------------------
-        // 7. ∂® ±”Î—” ±
-        // -----------------------------------------------------
-        // °æ…æ≥˝°øStepMotor_Timer_Run() µƒµ˜”√
-        
-        delay_ms(1000); 
-    } 
+    for (;;);
 }

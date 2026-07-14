@@ -1,5 +1,5 @@
-..\obj\lcd1602.o: lcd1602\lcd1602.c
-..\obj\lcd1602.o: lcd1602\lcd1602.h
+..\obj\lcd1602.o: ..\drivers\src\lcd1602.c
+..\obj\lcd1602.o: ..\drivers\inc\lcd1602.h
 ..\obj\lcd1602.o: D:\program\KeIl\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\lcd1602.o: ..\SYSTEM\sys\sys.h
 ..\obj\lcd1602.o: ..\USER\stm32f10x.h
@@ -30,4 +30,3 @@
 ..\obj\lcd1602.o: ..\STM32F10x_FWLib\inc\stm32f10x_usart.h
 ..\obj\lcd1602.o: ..\STM32F10x_FWLib\inc\stm32f10x_wwdg.h
 ..\obj\lcd1602.o: ..\STM32F10x_FWLib\inc\misc.h
-..\obj\lcd1602.o: ..\SYSTEM\delay\delay.h

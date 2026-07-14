@@ -1,5 +1,5 @@
-..\obj\key.o: key\key.c
-..\obj\key.o: key\key.h
+..\obj\key.o: ..\drivers\src\key.c
+..\obj\key.o: ..\drivers\inc\key.h
 ..\obj\key.o: ..\USER\stm32f10x.h
 ..\obj\key.o: ..\CORE\core_cm3.h
 ..\obj\key.o: D:\program\KeIl\ARM\ARMCC\Bin\..\include\stdint.h
@@ -29,5 +29,13 @@
 ..\obj\key.o: ..\STM32F10x_FWLib\inc\stm32f10x_usart.h
 ..\obj\key.o: ..\STM32F10x_FWLib\inc\stm32f10x_wwdg.h
 ..\obj\key.o: ..\STM32F10x_FWLib\inc\misc.h
-..\obj\key.o: ..\SYSTEM\delay\delay.h
-..\obj\key.o: ..\SYSTEM\sys\sys.h
+..\obj\key.o: ..\FreeRTOS\inc\FreeRTOS.h
+..\obj\key.o: D:\program\KeIl\ARM\ARMCC\Bin\..\include\stddef.h
+..\obj\key.o: ..\USER\FreeRTOSConfig.h
+..\obj\key.o: ..\FreeRTOS\inc\projdefs.h
+..\obj\key.o: ..\FreeRTOS\inc\portable.h
+..\obj\key.o: ..\FreeRTOS\inc\deprecated_definitions.h
+..\obj\key.o: ..\FreeRTOS\inc\portmacro.h
+..\obj\key.o: ..\FreeRTOS\inc\mpu_wrappers.h
+..\obj\key.o: ..\FreeRTOS\inc\task.h
+..\obj\key.o: ..\FreeRTOS\inc\list.h
